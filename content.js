@@ -24,7 +24,11 @@ function insertSignature() {
 			var signature = items.signatureText;
 			
 			//Insert signature into comment text box
-			$('.fr-element.fr-view').first().append('<code>' + signature + '</code></br>');
+			//6/19/18 - Teamwork.com wrapped their comment boxes in an iframe.
+			var $iframe = $(document.activeElement);
+			$iframe.ready(function() {
+				$iframe.contents().find("body").append('<code>' + signature + '</code></br>');
+			});
 		}
 	);
 }
