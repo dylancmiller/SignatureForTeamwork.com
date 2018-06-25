@@ -1,6 +1,7 @@
 // Saves options to chrome.storage
 function save_options() {
-  var signature = document.getElementById('signature').value.replace(/\r\n|\n|\r/g, '<br />');
+  var signature = document.getElementById('signature').value;//.replace(/<p.*?>/gi,'<br/>').replace(/<\/p>/gi,'<br/>');
+  console.log(signature);
   chrome.storage.sync.set({
     signatureText: signature
   }, function() {
@@ -20,9 +21,34 @@ function restore_options() {
   chrome.storage.sync.get({
   signatureText: 'Enter text here...'
   }, function(items) {
-    document.getElementById('signature').value = items.signatureText.replace(/<br\s*\/?>/mg,"\r\n");
+    document.getElementById('signature').value = items.signatureText;
   });
 }
+
+document.addEventListener('DOMContentLoaded', 
+	function() {
+		tinymce.init({
+		selector: '#signature',
+		menubar: false,
+		resize: 'both',
+		toolbar: 'styleselect | undo redo bold italic underline | bullist numlist | forecolor backcolor | image link hr',
+		height: 150,
+		width: 550,
+		plugins: "paste hr link code image textcolor lists",
+		branding: false,
+		paste_enable_default_filters: false,
+		paste_preprocess: function(plugin, args) {
+			console.log(args.content);
+			//Stripping pargraph tags due to poor formatting when pasting in TinyMCE
+			args.content = args.content.replace(/<p.*?>/gi,'').replace(/<\/p>/gi,'<br/>');
+		},
+		forced_root_block : '',
+		setup: function (editor) {
+			editor.on('change', function () {
+				editor.save();
+			})
+		}});
+	});
 document.addEventListener('DOMContentLoaded', restore_options);
 document.getElementById('save').addEventListener('click',
     save_options);
