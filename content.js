@@ -27,7 +27,8 @@ function insertSignature() {
 			//6/19/18 - Teamwork.com wrapped their comment boxes in an iframe.
 			var $iframe = $(document.activeElement);
 			$iframe.ready(function() {
-				$iframe.contents().find("body").append('<code>' + signature + '</code></br>');
+				$iframe.contents().find("body").append(signature);
+				console.log(signature);
 			});
 		}
 	);
